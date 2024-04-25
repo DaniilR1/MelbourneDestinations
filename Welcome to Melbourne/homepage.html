@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melbourne Destinations</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #bfcbd7;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 135%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .white-bg {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+        }
+        .white-bg .content {
+            max-width: 50%;
+        }
+        @media (max-width: 768px){
+            .white-bg .content{
+                max-width: 80%;
+            }
+        }
+
+        .gray-bg {
+            background-color: #3a3433;
+        }
+
+        .finally {
+            background-color: #7F6351;
+            height: calc(50vh - 60px); /* Adjusted height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .footer {
+            background-color: #000000;
+            height: calc(50vh + 20px); /* Adjusted height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            margin-top: -60px; /* Negative margin to remove extra space */
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+        }
+
+        .content {
+            padding: 20px;
+            color: #bf7b41;
+            flex: 1; /* Make the text container take up available space */
+        }
+
+        .form-container {
+            flex: 1; /* Make the form container take up available space */
+            margin-left: 20px; /* Add some spacing between text and form */
+        }
+
+        .form-container form {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-container label {
+            margin-right: 10px;
+        }
+
+        .form-container input[type="email"] {
+            padding: 5px;
+            margin-right: 10px;
+        }
+
+        .form-container button {
+            padding: 5px 10px;
+            background-color: #bf7b41;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #7f6351;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 30px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1001;
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-weight: bold;
+            margin: 0;
+            font-size: 50px;
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            background-color: #8a96a5;
+            color: #bf7b41;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            background-color: #8a96a5;
+            z-index: -1;
+        }
+
+        .container:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .image-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .image-container img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 10px;
+            margin-left: 20px;
+        }
+
+        #menu-toggle {
+            position: fixed;
+            top: 50px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: #bf7b41;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 2019;
+            transition: transform 0.3s; /* Add transition for smooth rotation */
+        }
+
+        #menu-toggle.open {
+            transform: rotate(0deg); /* Rotate to the right */
+        }
+
+        #menu-toggle.closed {
+            transform: rotate(180deg); /* Rotate to the left */
+        }
+
+        #close-sidebar {
+            position: absolute;
+            top: 36px; /* Adjust as needed */
+            right: 28px; /* Adjust as needed */
+            background: none;
+            border: none;
+            color: #BF7B41; /* Color */
+            font-size: 40px; /* Size */
+            cursor: pointer;
+            z-index: 2001; /* Ensure it's above the sidebar */
+            font-weight: bold; /* Make it thicker */
+            text-shadow: -1px -1px 0 #000,
+                        1px -1px 0 #000,
+                        -1px  1px 0 #000,
+                        1px  1px 0 #000; /* Add thin black outline */
+        }
+
+        #menu-toggle div {
+            width: 30px;
+            height: 4px;
+            background-color: #bf7b41;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+
+        #menu-toggle.open div {
+            background-color: transparent;
+        }
+
+        #sidebar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #3A3433, #8A96A5);
+            position: fixed;
+            top: 0;
+            right: -100%; /* Initially hidden */
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between; /* Split the content into two sections */
+            align-items: center;
+            z-index: 9000; /* Ensure it's below the header */
+        }
+
+        nav {
+            width: 50%; /* Half of the sidebar width */
+            padding: 20px 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            height: 100%;
+        }
+
+        nav a {
+            color: #bfcbd7;
+            text-decoration: none;
+            margin: 10px 0;
+            padding: 20px 40px;
+            border-radius: 10px;
+            transition: background-color 0.3s, color 0.3s;
+            width: 80%;
+            max-width: 200px;
+            font-size: 33px;
+        }
+
+        nav a:hover {
+            background-color: #7f6351;
+        }
+
+        .line-divider {
+            height: 100%;
+            width: 2px;
+            background-color: rgba(15, 10, 10, 0.5); /* Faint line color */
+        }
+
+        .sidebar-content {
+            width: 50%; /* Half of the sidebar width */
+        }
+
+        main {
+            flex: 1;
+            text-align: center;
+            overflow-y: auto;
+            padding-top: 150px; /* Ensure space for the header and initial empty space */
+            padding-bottom: 60px; /* Ensure space for the footer */
+            margin-left: 0; /* Set the margin-left to 0 */
+        }
+
+        #logo {
+            position: fixed;
+            top: 25px;
+            left: 50px;
+            width: 130px;
+            height: auto;
+            z-index: 1002;
+            border-radius: 50%;
+        }
+
+        #logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 60%;
+        }
+
+        ::-webkit-scrollbar {
+            width: 15px;
+            position: absolute;
+            right: 0;
+            z-index: 9999;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #3a3433;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #bf7b41;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7f6351;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Video background -->
+<video autoplay muted loop id="background-video">
+    <source src="Melbourne Cityscape - 4K Timelapse.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<!-- Logo -->
+<a href="homepage.html" id="logo">
+    <img src="la-trobe-university-logo3.webp" alt="Logo">
+</a>
+
+<!-- Header -->
+<header>
+    <h1>Melbourne &#9749;</h1>
+    <button id="menu-toggle">
+        <div></div>
+        <div></div>
+        <div></div>
+    </button>
+</header>
+
+<aside id="sidebar">
+    <!-- Close button -->
+    <button id="close-sidebar">&#10006;</button>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">See & Do</a>
+        <a href="#">Getting Around</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    <div class="line-divider"></div>
+    <div class="sidebar-content">
+        <!-- Add any additional content here -->
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main>
+    <!-- First section with video background -->
+    <section class="section"></section>
+
+    <!-- Second section with white background -->
+    <section class="section white-bg">
+        <div class="content">
+            <h2>Content Title 2</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam lacinia lectus id venenatis suscipit. Suspendisse potenti.</p>
+        </div>
+    </section>
+
+    <!-- Third section with video background -->
+    <section class="section gray-bg">
+        <div class="content">
+            <h2>Content Title 3</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam lacinia lectus id venenatis suscipit. Suspendisse potenti.</p>
+        </div>
+    </section>
+
+    <!-- Final section with specified color -->
+    <section class="section finally">
+        <div class="content">
+            <h2>Final Section</h2>
+            <p>This is the final section with the specified color.</p>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="content">
+        <h2>Footer Section</h2>
+        <p>This is the footer section.</p>
+    </div>
+    <div class="form-container">
+        <form id="contactForm" action="#" method="post">
+            <div class="input-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" id="submitBtn">Send</button>
+        </form>
+    </div>
+</footer>
+
+
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function(event) {
+        event.stopPropagation();
+        document.getElementById('sidebar').style.right = document.getElementById('sidebar').style.right === '0px' ? '-100%' : '0px';
+        this.classList.toggle('open');
+    });
+
+    document.body.addEventListener('click', function(event) {
+        if (!document.getElementById('sidebar').contains(event.target) && !document.getElementById('menu-toggle').contains(event.target)) {
+            document.getElementById('sidebar').style.right = '-100%';
+            document.getElementById('menu-toggle').classList.remove('open');
+        }
+    });
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            document.getElementById('sidebar').style.right = '-100%';
+            document.getElementById('menu-toggle').classList.remove('open');
+        }
+    });
+
+    window.addEventListener('scroll', function() {
+        const yOffset = window.pageYOffset;
+        const parallaxRatio = 0.5;
+        document.body.style.backgroundPositionY = `${yOffset * parallaxRatio}px`;
+    });
+
+    window.addEventListener('scroll', function() {
+        const yOffset = window.pageYOffset;
+        const parallaxRatio = -0.3;
+        const backgroundVideo = document.getElementById('background-video');
+        backgroundVideo.style.top = `${yOffset * parallaxRatio}px`;
+    });
+
+    document.getElementById('close-sidebar').addEventListener('click', function(event) {
+        event.stopPropagation();
+        document.getElementById('sidebar').style.right = '-100%';
+        document.getElementById('menu-toggle').classList.remove('open');
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    // Add click event listener to all navigation links
+    document.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', function(event) {
+            // Close the sidebar
+            document.getElementById('sidebar').style.right = '-100%';
+            document.getElementById('menu-toggle').classList.remove('open');
+
+            // Check if the link href contains an anchor
+            if (this.href.indexOf('#') !== -1) {
+                event.preventDefault(); // Prevent default anchor behavior
+                const targetId = this.getAttribute('href').substr(1); // Get the target id
+                const targetElement = document.getElementById(targetId); // Get the target element
+                const yOffset = targetElement.getBoundingClientRect().top + window.pageYOffset; // Calculate the target offset
+                // Smooth scroll to the target element
+                window.scrollTo({
+                    top: yOffset,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('contactForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            // Create a new FormData object
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('message', message);
+
+            // Send the form data to the server
+            fetch('daniil.rauzin1@gmail.com', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Clear form fields on successful submission
+                    document.getElementById('name').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('message').value = '';
+                    alert('Message sent successfully!');
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('An error occurred. Please try again later.');
+            });
+        });
+    });
+</script>
+</body>
+</html>
+
